@@ -1,0 +1,38 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: godaddy-dyndns
+  namespace: kube-system
+  labels:
+    k8s-app: godaddy-dyndns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: godaddy-dyndns
+  template:
+    metadata:
+      labels:
+        k8s-app: godaddy-dyndns
+        name: godaddy-dyndns
+    spec:
+      containers:
+      - name: godaddy-dyndns
+        image: carlosedp/godaddy-dyndns:1.3-arm64
+        env:
+        - name: GODADDY_KEY
+          valueFrom:
+            secretKeyRef:
+              name: godaddy-dyndns
+              key: key
+        - name: GODADDY_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: godaddy-dyndns
+              key: secret
+        - name: GODADDY_DOMAIN
+          value: carlosedp.com
+        - name: GODADDY_TYPE
+          value: A
+        - name: GODADDY_NAME
+          value: cloud
